@@ -1,6 +1,6 @@
 # Project ignores
 build/
-.sass-cache/
+.sass-cache/ 
 
 # Logs
 logs
