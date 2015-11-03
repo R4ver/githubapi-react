@@ -1,0 +1,10 @@
+{
+  "name": "GithubApi-React",
+  "version": "0.0.1",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-react": "*"
+  }
+}
