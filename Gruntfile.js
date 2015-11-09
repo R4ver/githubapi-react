@@ -1,5 +1,5 @@
 /*global module:false*/
-    module.exports = function(grunt) {
+module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         react: {
@@ -18,6 +18,14 @@
             }
         },
 
+        browserify: {
+            dist: {
+                files: {
+                    'build/js/bundle.js': 'build/js/app.js'
+                }
+            }
+        },
+
         watch: {
             react: {
                 files: 'src/**/*.jsx',
@@ -27,6 +35,11 @@
             css: {
                 files: 'src/**/*.sass',
                 tasks: ['sass']
+            },
+
+            browserify: {
+                files: 'build/js/app.js',
+                tasks: ['browserify']
             }
         }
     });
@@ -34,6 +47,7 @@
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-browserify');
 
-    grunt.registerTask('default', ['react', "sass"]);
+    grunt.registerTask('default', ["react", "sass", "browserify"]);
 };
