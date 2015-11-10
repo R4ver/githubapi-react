@@ -15,14 +15,15 @@ class Header extends React.Component {
     handleClick(event) {
         let _this = event.currentTarget;
         _this.style.background = "rgba(0,0,0,.1)";
-
         _this.contentEditable = true;
+
+        selectElementContents(_this);
     }
 
     render() {
         return ( 
             <header className="page__header">
-                <h1 className="page__title"><span onClick={this.handleClick} onBlur={this.props.onBlur} className="gh-user">{this.props.username}</span>'s Github Repositories</h1>
+                <h1 className="page__title"><span onKeyDown={this.props.onKeyDown} onClick={this.handleClick} onBlur={this.props.onBlur} className="gh-user">{this.props.username}</span>'s Github Repositories</h1>
                 <span className="gh-info">Click on the GitHub username to change it</span>
             </header>
         )
@@ -41,7 +42,6 @@ class RepoList extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.username);
         fetch(`https://api.github.com/users/${this.state.username}/repos`).then(r => r.json()).then(data => {
             this.setState({
                 repos: data
@@ -49,10 +49,22 @@ class RepoList extends React.Component {
         });
     }
 
+    handleKeydown(event) {
+        let _this = event.currentTarget;
+        if (event.keyCode == 13) {
+            _this.setAttribute("contentEditable", false);
+        }
+
+        if ( (event.keyCode < 65 || event.keyCode > 90) && (event.keyCode < 48 || event.keyCode > 57) ) {
+            event.preventDefault();
+        }
+    }
+
     handleBlur(event) {
         let _this = event.currentTarget;
+        let trimmed = _this.textContent.trim();
 
-        fetch(`https://api.github.com/users/${_this.innerHTML}/repos`).then(r => r.json()).then(data => {
+        fetch(`https://api.github.com/users/${trimmed}/repos`).then(r => r.json()).then(data => {
             if ( data.message == "Not Found" ) {
                 this.setState({
                     repos: [{name: "User not found."}]
@@ -66,7 +78,7 @@ class RepoList extends React.Component {
         });
 
         _this.style.background = "rgba(0,0,0,0)";
-
+ 
         _this.contentEditable = false;
     }
 
@@ -75,12 +87,12 @@ class RepoList extends React.Component {
 
             <div className="page__wrapper">
                 <main className="container container--center">
-                    <Header username={this.state.username} onBlur={this.handleBlur.bind(this)} />
+                    <Header username={this.state.username} onKeyDown={this.handleKeydown.bind(this)} onBlur={this.handleBlur.bind(this)} />
 
                     <div className="repo-list">
                         <ol>
                             {this.state.repos.map((repo, key) => {
-                                return <li key={key}><a href={ repo.html_url }>{ repo.name }</a></li>;
+                                return <li key={key}><a href={ repo.html_url } target="blank">{ repo.name }</a></li>;
                             })}
                         </ol>
                     </div>
@@ -102,6 +114,14 @@ class GitRepos extends React.Component {
         );
     }
 };
+
+let selectElementContents = (el) => {
+    let range = document.createRange();
+    range.selectNodeContents(el);
+    let sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
 
 ReactDOM.render(
     <GitRepos />,
