@@ -51,11 +51,17 @@ class RepoList extends React.Component {
 
     handleKeydown(event) {
         let _this = event.currentTarget;
+        console.log(event.keyCode);
+
         if (event.keyCode == 13) {
             _this.setAttribute("contentEditable", false);
         }
 
-        if ( (event.keyCode < 65 || event.keyCode > 90) && (event.keyCode < 48 || event.keyCode > 57) ) {
+        if ( event.keyCode == 37 || event.keyCode == 39 ) {
+            return;
+        }
+
+        if ( event.keyCode >= 32 && (event.keyCode < 65 || event.keyCode > 90) && (event.keyCode < 48 || event.keyCode > 57) ) {
             event.preventDefault();
         }
     }
@@ -72,7 +78,7 @@ class RepoList extends React.Component {
                 return;
             }
 
-            this.setState({
+            this.setState({ 
                 repos: data
             });
         });
