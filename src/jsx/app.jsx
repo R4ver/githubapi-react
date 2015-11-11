@@ -51,7 +51,6 @@ class RepoList extends React.Component {
 
     handleKeydown(event) {
         let _this = event.currentTarget;
-        console.log(event.keyCode);
 
         if (event.keyCode == 13) {
             _this.setAttribute("contentEditable", false);
